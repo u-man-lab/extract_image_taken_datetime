@@ -1,0 +1,9 @@
+/configs/*
+!/configs/extract_image_taken_datetime.yaml
+!/configs/read_exiftool_values_of_files.yaml
+
+/data/*
+!/data/.gitkeep
+
+/results/*
+!/results/.gitkeep

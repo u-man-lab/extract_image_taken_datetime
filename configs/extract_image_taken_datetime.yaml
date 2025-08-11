@@ -1,0 +1,49 @@
+## configuration file for "extract_image_taken_datetime.py" ##
+# NOTE: Unless marked as "optional," all fields are required.
+
+INPUT:
+
+  # An input CSV file with a column of file paths.
+  FILE_PATHS_LIST_CSV:
+    PATH: './data/file_paths_list.csv'
+    ENCODING: 'utf-8'
+    FILE_PATHS_LIST_COLUMN: 'file_paths'
+
+PROCESS:
+
+  # Timezone to apply if a datetime string is without timezone (naive).
+  DEFAULT_TIMEZONE_FOR_NAIVE_DATETIME_VALUE: 'Asia/Tokyo'
+  # (optional) Interval seconds for printing ExifTool progress. No printing if not specified.
+  # Too small value (such as microseconds) may make process unstable.
+  EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS: 120.0
+  # Priority-ordered ExifTool tags to extract image datetime.
+  EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER:
+    - 'Composite:SubSecDateTimeOriginal'
+    - 'Composite:SubSecCreateDate'
+    - 'Composite:DateTimeCreated'
+    - 'XMP:DateCreated'
+    - 'MakerNotes:TimeStamp'
+    - 'EXIF:DateTimeOriginal'
+    - 'MakerNotes:SonyDateTime'
+    - 'Composite:SubSecModifyDate'
+    - 'EXIF:ModifyDate'
+    - 'XMP:ModifyDate'
+    - 'File:FileModifyDate'
+
+OUTPUT:
+
+  # An output CSV file with columns of image taken datetime.
+  FILE_PATHS_LIST_WITH_IMAGE_TAKEN_DATETIME_CSV:
+    # Parent folder must exist.
+    PATH: './results/file_paths_list_with_image_taken_datetime.csv'
+    ENCODING: 'utf-8'
+    # Timezone for "DATETIME_LOCAL_UNIX_COLUMN" below.
+    LOCAL_TIMEZONE_FOR_UNIX_TIMESTAMP: 'Asia/Tokyo'
+    # Column name for detected ExifTool tag.
+    DATETIME_TAG_BY_EXIFTOOL_COLUMN: 'datetime_tag_by_exiftool'
+    # Column name for raw string value of ExifTool tag.
+    DATETIME_BY_EXIFTOOL_COLUMN: 'datetime_by_exiftool'
+    # Column name for ISO 8601 formatted datetime.
+    DATETIME_AWARE_ISO8601_EXTENDED_COLUMN: 'datetime_aware_iso8601_extended'
+    # Column name for UNIX-format-localized timestamp.
+    DATETIME_LOCAL_UNIX_COLUMN: 'datetime_local_unix'

@@ -1,0 +1,106 @@
+## configuration file for "read_exiftool_values_of_files.py" ##
+# NOTE: Unless marked as "optional," all fields are required.
+
+INPUT:
+
+  # An input CSV file with a column of file paths.
+  FILE_PATHS_LIST_CSV:
+    PATH: './data/file_paths_list.csv'
+    ENCODING: 'utf-8'
+    FILE_PATHS_LIST_COLUMN: 'file_paths'
+
+PROCESS:
+
+  # (optional) Interval for printing ExifTool progress. No printing if not specified.
+  EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS: 120.0
+  # (optional) ExifTool tags to show value in output CSV. [specific tags mode]
+  # If not be set, all tags are shown, but the value will be masked. [all tags mode]
+  TARGET_EXIFTOOL_TAGS:
+    - 'File:FileInodeChangeDate'
+    - 'File:FileModifyDate'
+    - 'File:FileAccessDate'
+    - 'EXIF:ModifyDate'
+    - 'EXIF:DateTimeOriginal'
+    - 'EXIF:CreateDate'
+    - 'EXIF:ExposureTime'
+    - 'ICC_Profile:ProfileDateTime'
+    - 'MakerNotes:SelfTimer'
+    - 'MakerNotes:ExposureTime'
+    - 'EXIF:SubSecTimeOriginal'
+    - 'Composite:SubSecDateTimeOriginal'
+    - 'EXIF:SubSecTimeDigitized'
+    - 'Composite:SubSecCreateDate'
+    - 'MakerNotes:SonyDateTime'
+    - 'MakerNotes:SonyExposureTime2'
+    - 'MakerNotes:RicohDate'
+    - 'MakerNotes:RunTimeEpoch'
+    - 'MakerNotes:RunTimeValue'
+    - 'Composite:RunTimeSincePowerUp'
+    - 'MakerNotes:RunTimeFlags'
+    - 'MakerNotes:ManufactureDate2'
+    - 'MakerNotes:ManufactureDate1'
+    - 'EXIF:GPSDateStamp'
+    - 'EXIF:GPSTimeStamp'
+    - 'Composite:GPSDateTime'
+    - 'Composite:SubSecModifyDate'
+    - 'EXIF:OffsetTime'
+    - 'EXIF:OffsetTimeOriginal'
+    - 'EXIF:OffsetTimeDigitized'
+    - 'XMP:DateCreated'
+    - 'XMP:CreateDate'
+    - 'XMP:ModifyDate'
+    - 'QuickTime:PosterTime'
+    - 'QuickTime:CurrentTime'
+    - 'QuickTime:MediaModifyDate'
+    - 'QuickTime:TrackCreateDate'
+    - 'QuickTime:MediaCreateDate'
+    - 'QuickTime:TrackModifyDate'
+    - 'QuickTime:PreviewTime'
+    - 'QuickTime:SelectionTime'
+    - 'QuickTime:CreateDate'
+    - 'QuickTime:ModifyDate'
+    - 'EXIF:SubSecTime'
+    - 'XMP:RegionExtensionsTimeStamp'
+    - 'MakerNotes:TargetExposureTime'
+    - 'QuickTime:TimeZone'
+    - 'MakerNotes:TimeZone'
+    - 'MakerNotes:PowerUpTime'
+    - 'MakerNotes:FirmwareDate'
+    - 'QuickTime:CreationDate'
+    - 'RIFF:DateTimeOriginal'
+    - 'MakerNotes:TimeSincePowerOn'
+    - 'QuickTime:FrameReadoutTime'
+    - 'QuickTime:ContentCreateDate'
+    - 'QuickTime:ContentCreateDate-jpn'
+    - 'QuickTime:CreationDate-jpn-JP'
+    - 'IPTC:TimeCreated'
+    - 'IPTC:DateCreated'
+    - 'Composite:DateTimeCreated'
+    - 'XMP:MetadataDate'
+    - 'IPTC:DigitalCreationTime'
+    - 'Composite:DigitalCreationDateTime'
+    - 'IPTC:DigitalCreationDate'
+    - 'MakerNotes:SelfTimer2'
+    - 'MakerNotes:TimeStamp'
+    - 'XMP:DateTimeOriginal'
+    - 'XMP:DateTimeDigitized'
+    - 'XMP:ExposureTime'
+    - 'PNG:Datecreate'
+    - 'PNG:Datemodify'
+    - 'EXIF:CompositeImageExposureTimes'
+    - 'PNG:CreationTime'
+    - 'PNG:ModifyDate'
+    - 'QuickTime:EncodingTime'
+
+OUTPUT:
+
+  # An output CSV file with columns of ExifTool tags.
+  FILE_PATHS_LIST_WITH_EXIFTOOL_TAGS_CSV:
+    # Parent folder must exist.
+    PATH: './results/file_paths_list_with_exif_tool_tags.csv'
+    ENCODING: 'utf-8'
+    # (optional) Masking string in all tags mode (1 length at least). Default to "●".
+    VALUE_MASKING_STRING: '●'
+    # (optional) Suffix string to original columns duplicated with
+    # ExifTool tags name (1 length at least). Default to "_ORG".
+    ORIGINAL_COLUMNS_SUFFIX: '_ORG'
