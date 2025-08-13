@@ -91,6 +91,20 @@ class FilePathsListCsvConfig(PathEncodingConverterMixin, BaseModel):
         frozen=True, extra='forbid', strict=True, arbitrary_types_allowed=True
     )
 
+    def __get_missing_columns(self, df: pd.DataFrame) -> tuple[str, ...]:
+        """Returns a tuple of necessary columns that does not exist in the given DataFrame.
+
+        Args:
+            df: DataFrame to check columns missing.
+
+        Returns:
+            tuple[str, ...]: A tuple of necessary columns that does not exist in the df.
+        """
+
+        NECESSARY_COLUMNS: Final[tuple[str, ...]] = (self.FILE_PATHS_LIST_COLUMN,)
+
+        return tuple(col for col in NECESSARY_COLUMNS if col not in df.columns)
+
     def read_csv(self) -> pd.DataFrame:
         """Reads the configured CSV file into a pandas DataFrame.
 
@@ -99,9 +113,12 @@ class FilePathsListCsvConfig(PathEncodingConverterMixin, BaseModel):
         """
 
         getLogger(__name__).info(f'Reading file "{self.PATH}"...')
-        return pd.read_csv(
-            self.PATH, encoding=str(self.ENCODING), dtype=str, keep_default_na=False
-        )
+        df = pd.read_csv(self.PATH, encoding=str(self.ENCODING), dtype=str, keep_default_na=False)
+        missing_columns = self.__get_missing_columns(df)
+        if missing_columns:
+            missing_columns_str = '", "'.join(missing_columns)
+            raise ValueError(f'Necessary columns are missing in the CSV.: "{missing_columns_str}"')
+        return df
 
 
 class InputConfig(BaseModel):
@@ -192,24 +209,24 @@ class FilePathsListWithImageTakenDatetimeCsvConfig(PathEncodingConverterMixin, B
         return timezone
 
     def get_already_existing_new_columns(self, df: pd.DataFrame) -> tuple[str, ...]:
-        """Returns a list of columns that already exist in the given DataFrame
+        """Returns a tuple of columns that already exist in the given DataFrame
         and would conflict with newly added datetime columns.
 
         Args:
             df: DataFrame to check for column name conflicts.
 
         Returns:
-            tuple[str, ...]: Existing column names among the configured datetime columns.
+            tuple[str, ...]: Existing column names in the df.
         """
 
-        new_columns = (
+        NEW_COLUMNS: Final[tuple[str, ...]] = (
             self.DATETIME_TAG_BY_EXIFTOOL_COLUMN,
             self.DATETIME_BY_EXIFTOOL_COLUMN,
             self.DATETIME_AWARE_ISO8601_EXTENDED_COLUMN,
             self.DATETIME_LOCAL_UNIX_COLUMN,
         )
 
-        return tuple(col for col in new_columns if col in df.columns)
+        return tuple(col for col in NEW_COLUMNS if col in df.columns)
 
     def write_csv_from_dataframe(
         self, df: pd.DataFrame, columns: list | None = None, index: bool = True
@@ -558,7 +575,11 @@ def __extract_image_taken_datetime():
     CONFIG: Final[Config] = __read_arg_config_path()
 
     source_csv_config = CONFIG.INPUT.FILE_PATHS_LIST_CSV
-    source_csv_df = source_csv_config.read_csv()
+    try:
+        source_csv_df = source_csv_config.read_csv()
+    except Exception:
+        logger.exception(f'Failed to read the CSV "{source_csv_config.PATH}".')
+        sys.exit(1)
 
     if source_csv_df.shape[0] == 0:
         logger.error(f'No lines in the csv "{source_csv_config.PATH}".')
@@ -569,30 +590,40 @@ def __extract_image_taken_datetime():
         source_csv_df
     )
     if already_existing_new_columns:
-        raise ValueError(
+        already_existing_new_columns_str = '", "'.join(already_existing_new_columns)
+        logger.error(
             f'Tried to create new columns, but already exist in "{CONFIG.INPUT.FILE_PATHS_LIST_CSV.PATH}".'
-            + f': ["{'","'.join(already_existing_new_columns)}"]'
+            + f': "{already_existing_new_columns_str}"'
         )
+        sys.exit(1)
 
     processing_df = source_csv_df.copy()
 
     path_str_list = processing_df[source_csv_config.FILE_PATHS_LIST_COLUMN].tolist()
 
     logger.info('Scanning profiles of the files...')
-    with ExifTool(
-        tuple(CONFIG.PROCESS.EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER)
-    ) as _exiftool:
-        exiftool_result_list = _exiftool.execute_on_files(
-            path_str_list,
-            CONFIG.PROCESS.EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS,
-        )
+    try:
+        with ExifTool(
+            tuple(CONFIG.PROCESS.EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER)
+        ) as _exiftool:
+            exiftool_result_list = _exiftool.execute_on_files(
+                path_str_list,
+                CONFIG.PROCESS.EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS,
+            )
+    except Exception:
+        logger.exception('Failed to execute ExifTool on the files.')
+        sys.exit(1)
 
     logger.info('Searching image taken datetime data...')
-    datetime_original_list = DatetimeKeyValue.get_datetime_value_by_key(
-        exiftool_result_list,
-        CONFIG.PROCESS.EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER,
-        CONFIG.PROCESS.DEFAULT_TIMEZONE_FOR_NAIVE_DATETIME_VALUE,
-    )
+    try:
+        datetime_original_list = DatetimeKeyValue.get_datetime_value_by_key(
+            exiftool_result_list,
+            CONFIG.PROCESS.EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER,
+            CONFIG.PROCESS.DEFAULT_TIMEZONE_FOR_NAIVE_DATETIME_VALUE,
+        )
+    except Exception:
+        logger.exception('Failed to get image taken datetime from ExifTool results.')
+        sys.exit(1)
 
     logger.info('Adding new columns...')
     processing_df[output_csv_config.DATETIME_TAG_BY_EXIFTOOL_COLUMN] = pd.Series(
@@ -602,37 +633,51 @@ def __extract_image_taken_datetime():
         [dtorg.raw_value for dtorg in datetime_original_list], index=processing_df.index
     )
 
-    datetime_original_iso8601_list = [
-        (
-            dtorg.datetime_value.isoformat(timespec='microseconds')
-            if dtorg.datetime_value is not None
-            else None
+    try:
+        datetime_original_iso8601_list = [
+            (
+                dtorg.datetime_value.isoformat(timespec='microseconds')
+                if dtorg.datetime_value is not None
+                else None
+            )
+            for dtorg in datetime_original_list
+        ]
+        processing_df[output_csv_config.DATETIME_AWARE_ISO8601_EXTENDED_COLUMN] = pd.Series(
+            datetime_original_iso8601_list, index=processing_df.index
         )
-        for dtorg in datetime_original_list
-    ]
-    processing_df[output_csv_config.DATETIME_AWARE_ISO8601_EXTENDED_COLUMN] = pd.Series(
-        datetime_original_iso8601_list, index=processing_df.index
-    )
-
-    datetime_original_local_obj_list = [
-        (
-            dtorg.datetime_value.astimezone(
-                output_csv_config.LOCAL_TIMEZONE_FOR_UNIX_TIMESTAMP
-            ).replace(tzinfo=None)
-            if dtorg.datetime_value is not None
-            else None
+    except Exception:
+        logger.exception(
+            f'Failed to add column "{output_csv_config.DATETIME_AWARE_ISO8601_EXTENDED_COLUMN}".'
         )
-        for dtorg in datetime_original_list
-    ]
-    datetime_original_local_unix_list = [
-        f'{l_obj.timestamp():.6f}' if l_obj is not None else None
-        for l_obj in datetime_original_local_obj_list
-    ]
-    processing_df[output_csv_config.DATETIME_LOCAL_UNIX_COLUMN] = pd.Series(
-        datetime_original_local_unix_list, index=processing_df.index
-    )
+        sys.exit(1)
 
-    output_csv_config.write_csv_from_dataframe(processing_df, index=False)
+    try:
+        datetime_original_local_obj_list = [
+            (
+                dtorg.datetime_value.astimezone(
+                    output_csv_config.LOCAL_TIMEZONE_FOR_UNIX_TIMESTAMP
+                ).replace(tzinfo=None)
+                if dtorg.datetime_value is not None
+                else None
+            )
+            for dtorg in datetime_original_list
+        ]
+        datetime_original_local_unix_list = [
+            f'{l_obj.timestamp():.6f}' if l_obj is not None else None
+            for l_obj in datetime_original_local_obj_list
+        ]
+        processing_df[output_csv_config.DATETIME_LOCAL_UNIX_COLUMN] = pd.Series(
+            datetime_original_local_unix_list, index=processing_df.index
+        )
+    except Exception:
+        logger.exception(f'Failed to add column "{output_csv_config.DATETIME_LOCAL_UNIX_COLUMN}".')
+        sys.exit(1)
+
+    try:
+        output_csv_config.write_csv_from_dataframe(processing_df, index=False)
+    except Exception:
+        logger.exception(f'Failed to write the CSV "{output_csv_config.PATH}".')
+        sys.exit(1)
 
     logger.info(f'"{os.path.basename(__file__)}" done!')
 
