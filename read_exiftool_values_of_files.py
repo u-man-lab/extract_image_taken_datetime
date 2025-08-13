@@ -163,13 +163,9 @@ def get_all_exiftool_tags():
 
     source_csv_config = CONFIG.INPUT.FILE_PATHS_LIST_CSV
     try:
-        source_csv_df = source_csv_config.read_csv()
+        source_csv_df = source_csv_config.read_csv(allow_empty=False)
     except Exception:
         logger.exception(f'Failed to read the CSV "{source_csv_config.PATH}".')
-        sys.exit(1)
-
-    if source_csv_df.shape[0] == 0:
-        logger.error(f'No lines in the csv "{source_csv_config.PATH}".')
         sys.exit(1)
 
     processing_df = source_csv_df.copy()

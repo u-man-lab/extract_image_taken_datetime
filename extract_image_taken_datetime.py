@@ -105,19 +105,28 @@ class FilePathsListCsvConfig(PathEncodingConverterMixin, BaseModel):
 
         return tuple(col for col in NECESSARY_COLUMNS if col not in df.columns)
 
-    def read_csv(self) -> pd.DataFrame:
+    def read_csv(self, allow_empty: bool = True) -> pd.DataFrame:
         """Reads the configured CSV file into a pandas DataFrame.
+
+        Args:
+            allow_empty: Whether to allow empty rows below header row.
 
         Returns:
             pd.DataFrame: DataFrame containing the contents of the CSV file.
         """
 
         getLogger(__name__).info(f'Reading CSV file "{self.PATH}"...')
+
         df = pd.read_csv(self.PATH, encoding=str(self.ENCODING), dtype=str, keep_default_na=False)
+
         missing_columns = self.__get_missing_columns(df)
         if missing_columns:
             missing_columns_str = '", "'.join(missing_columns)
             raise ValueError(f'Necessary columns are missing in the CSV.: "{missing_columns_str}"')
+
+        if not allow_empty and df.shape[0] == 0:
+            raise ValueError('Empty rows in the CSV.')
+
         return df
 
 
@@ -576,13 +585,9 @@ def __extract_image_taken_datetime():
 
     source_csv_config = CONFIG.INPUT.FILE_PATHS_LIST_CSV
     try:
-        source_csv_df = source_csv_config.read_csv()
+        source_csv_df = source_csv_config.read_csv(allow_empty=False)
     except Exception:
         logger.exception(f'Failed to read the CSV "{source_csv_config.PATH}".')
-        sys.exit(1)
-
-    if source_csv_df.shape[0] == 0:
-        logger.error(f'No lines in the csv "{source_csv_config.PATH}".')
         sys.exit(1)
 
     output_csv_config = CONFIG.OUTPUT.FILE_PATHS_LIST_WITH_IMAGE_TAKEN_DATETIME_CSV
