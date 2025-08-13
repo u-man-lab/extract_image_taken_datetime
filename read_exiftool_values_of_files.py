@@ -162,20 +162,30 @@ def get_all_exiftool_tags():
         logger.info('Running in "specific tags mode".: Showing all values.')
 
     source_csv_config = CONFIG.INPUT.FILE_PATHS_LIST_CSV
-    source_csv_df = source_csv_config.read_csv()
+    try:
+        source_csv_df = source_csv_config.read_csv()
+    except Exception:
+        logger.exception(f'Failed to read the CSV "{source_csv_config.PATH}".')
+        sys.exit(1)
+
     if source_csv_df.shape[0] == 0:
         logger.error(f'No lines in the csv "{source_csv_config.PATH}".')
         sys.exit(1)
 
     processing_df = source_csv_df.copy()
 
-    logger.info('Scanning profiles of the files...')
     path_str_list = processing_df[source_csv_config.FILE_PATHS_LIST_COLUMN].tolist()
-    with ExifTool(tuple(CONFIG.PROCESS.TARGET_EXIFTOOL_TAGS)) as _exiftool:
-        exiftool_result_list = _exiftool.execute_on_files(
-            path_str_list,
-            CONFIG.PROCESS.EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS,
-        )
+
+    logger.info('Scanning profiles of the files...')
+    try:
+        with ExifTool(tuple(CONFIG.PROCESS.TARGET_EXIFTOOL_TAGS)) as _exiftool:
+            exiftool_result_list = _exiftool.execute_on_files(
+                path_str_list,
+                CONFIG.PROCESS.EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS,
+            )
+    except Exception:
+        logger.exception('Failed to execute ExifTool on the files.')
+        sys.exit(1)
 
     output_csv_config = CONFIG.OUTPUT.FILE_PATHS_LIST_WITH_EXIFTOOL_TAGS_CSV
     if len(CONFIG.PROCESS.TARGET_EXIFTOOL_TAGS) == 0:
@@ -207,7 +217,11 @@ def get_all_exiftool_tags():
         exiftool_tags_values_df, lsuffix=output_csv_config.ORIGINAL_COLUMNS_SUFFIX
     )
 
-    output_csv_config.write_csv_from_dataframe(processing_df, index=False)
+    try:
+        output_csv_config.write_csv_from_dataframe(processing_df, index=False)
+    except Exception:
+        logger.exception(f'Failed to write the CSV "{output_csv_config.PATH}".')
+        sys.exit(1)
 
     logger.info(f'"{os.path.basename(__file__)}" done!')
 
