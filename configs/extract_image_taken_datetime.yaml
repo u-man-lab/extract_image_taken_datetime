@@ -17,6 +17,7 @@ PROCESS:
   # Too small value (such as microseconds) may make process unstable.
   EXIFTOOL_PROGRESS_PRINT_PERIOD_SECONDS: 120.0
   # Priority-ordered ExifTool tags to extract image datetime.
+  # These 11 values were determined experimentally in the developer's environment.
   EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER:
     - 'Composite:SubSecDateTimeOriginal'
     - 'Composite:SubSecCreateDate'
