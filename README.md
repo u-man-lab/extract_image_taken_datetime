@@ -65,6 +65,7 @@ exiftool -ver
 
 ```bash
 git clone https://github.com/u-man-lab/extract_image_taken_datetime.git
+# If you don't have "git", copy the scripts and YAMLs manually to your environment.
 cd ./extract_image_taken_datetime
 ```
 
@@ -93,7 +94,7 @@ On success, stderr will include logs similar to:
 
 ```
 2025-08-11 10:01:23,476 [INFO] __main__: "extract_image_taken_datetime.py" start!
-2025-08-11 10:01:23,522 [INFO] __main__: Reading file "data/file_paths_list.csv"...
+2025-08-11 10:01:23,522 [INFO] __main__: Reading CSV file "data/file_paths_list.csv"...
 2025-08-11 10:01:23,873 [INFO] __main__: Scanning profiles of the files...
 2025-08-11 10:01:42,014 [INFO] __main__: ExifTool processing... [0/36031 valid files]
 ：
@@ -180,15 +181,15 @@ Example stderr log (specific tags mode):
 
 ```
 2025-08-11 14:44:11,870 [INFO] __main__: "read_exiftool_values_of_files.py" start!
-2025-08-11 14:44:11,913 [INFO] __main__: Running in specific tags mode.: Showing all values.
-2025-08-11 14:44:11,914 [INFO] extract_image_taken_datetime: Reading file "data/file_paths_list.csv"...
+2025-08-11 14:44:11,913 [INFO] __main__: Running in "specific tags mode".: Showing all values.
+2025-08-11 14:44:11,914 [INFO] extract_image_taken_datetime: Reading CSV file "data/file_paths_list.csv"...
 2025-08-11 14:44:12,307 [INFO] __main__: Scanning profiles of the files...
 2025-08-11 14:44:31,246 [INFO] extract_image_taken_datetime: ExifTool processing... [0/36031 valid files]
 :
 2025-08-11 15:46:32,408 [INFO] extract_image_taken_datetime: ExifTool processing... [35817/36031 valid files]
 2025-08-11 15:46:56,540 [INFO] extract_image_taken_datetime: ExifTool processing has been completed. [36031/36031 valid files]
 2025-08-11 15:46:59,015 [INFO] __main__: Merging profiles data to source CSV data...
-2025-08-11 15:47:03,275 [INFO] __main__: Writing CSV file "results/file_paths_list_with_all_exif_tool_tags_specific_.csv"...
+2025-08-11 15:47:03,275 [INFO] __main__: Writing CSV file "results/file_paths_list_with_exif_tool_tags.csv"...
 2025-08-11 15:47:08,354 [INFO] __main__: "read_exiftool_values_of_files.py" done!
 ```
 
@@ -204,9 +205,9 @@ The resulting CSV will be like:
 
 * **Specific tags mode** (actual values):
   ```
-  file_paths,datetime_tag_by_exiftool,datetime_by_exiftool,datetime_aware_iso8601_extended,datetime_local_unix
-  /path/IMG_0395.PNG,File:FileModifyDate,2012-12-05 22:46:41+09:00,2012-12-05T22:46:41.000000+09:00,1354715201.000000
-  /path/IMG_0401.PNG,File:FileModifyDate,2012-12-05 22:48:28+09:00,2012-12-05T22:48:28.000000+09:00,1354715308.000000
+  file_paths,SourceFile,File:FileModifyDate,...,QuickTime:EncodingTime
+  /path/IMG_0395.PNG,/path/IMG_0395.PNG,2012:12:05 22:46:41+09:00,...,
+  /path/IMG_0401.PNG,/path/IMG_0401.PNG,2012:12:05 22:48:28+09:00,...,
   :
   ```
 
@@ -214,4 +215,4 @@ The resulting CSV will be like:
 
 ### 2.4. Common Errors
 
-For full details, see the script source.
+For full details, see the script source. Common errors are the same as [`extract_image_taken_datetime.py`](#1-extract_image_taken_datetimepy).

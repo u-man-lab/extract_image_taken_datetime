@@ -112,7 +112,7 @@ class FilePathsListCsvConfig(PathEncodingConverterMixin, BaseModel):
             pd.DataFrame: DataFrame containing the contents of the CSV file.
         """
 
-        getLogger(__name__).info(f'Reading file "{self.PATH}"...')
+        getLogger(__name__).info(f'Reading CSV file "{self.PATH}"...')
         df = pd.read_csv(self.PATH, encoding=str(self.ENCODING), dtype=str, keep_default_na=False)
         missing_columns = self.__get_missing_columns(df)
         if missing_columns:
