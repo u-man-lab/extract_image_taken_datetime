@@ -42,7 +42,7 @@ class FilePathsListWithExifToolTagsCsvConfig(PathEncodingConverterMixin, BaseMod
         PATH: Path to a new output CSV file.
         ENCODING: Encoding to use when writing the CSV.
         VALUE_MASKING_STRING (optional):
-            Masking string in all tags mode (1 length at least). Default to "●".
+            Masking string in all tags mode (1 length at least). Default to "*".
         ORIGINAL_COLUMNS_SUFFIX (optional):
             Suffix string to original columns duplicated with ExifTool tags (1 length at least).
             Default to "_ORG".
@@ -50,7 +50,7 @@ class FilePathsListWithExifToolTagsCsvConfig(PathEncodingConverterMixin, BaseMod
 
     PATH: NewPath  # Must not exist & parent must exist
     ENCODING: EncodingStr
-    VALUE_MASKING_STRING: StrictStr = Field('●', min_length=1)
+    VALUE_MASKING_STRING: StrictStr = Field('*', min_length=1)
     ORIGINAL_COLUMNS_SUFFIX: StrictStr = Field('_ORG', min_length=1)
 
     model_config = ConfigDict(

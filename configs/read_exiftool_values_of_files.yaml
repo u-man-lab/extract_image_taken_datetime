@@ -99,8 +99,8 @@ OUTPUT:
     # Parent folder must exist.
     PATH: './results/file_paths_list_with_exif_tool_tags.csv'
     ENCODING: 'utf-8'
-    # (optional) Masking string in all tags mode (1 length at least). Default to "●".
-    VALUE_MASKING_STRING: '●'
+    # (optional) Masking string in all tags mode (1 length at least). Default to "*".
+    VALUE_MASKING_STRING: '*'
     # (optional) Suffix string to original columns duplicated with
     # ExifTool tags name (1 length at least). Default to "_ORG".
     ORIGINAL_COLUMNS_SUFFIX: '_ORG'
