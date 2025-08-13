@@ -1,5 +1,7 @@
 # extract_image_taken_datetime
 
+* NOTE: 日本語版のREADMEは[`README-ja.md`](./README-ja.md)を参照。
+
 ## Overview
 
 This repository provides tools for extracting "image taken" datetime from files (photos, videos) using [ExifTool](https://exiftool.org/).  
@@ -70,7 +72,7 @@ cd ./extract_image_taken_datetime
 
 ```bash
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r ./requirements.txt
 ```
 
 #### (5) Edit the configuration file
