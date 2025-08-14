@@ -76,11 +76,20 @@ pip install --upgrade pip
 pip install -r ./requirements.txt
 ```
 
-#### (5) Edit the configuration file
+#### (5) Prepare a CSV file for input
+Prepare a CSV file containing the paths of photo or video files on the PC.  
+If you do not have a CSV file, create one by the following method.
+```bash
+TARGET_FOLDER='<folder where target files are stored>'
+find "$TARGET_FOLDER" -type f > ./data/file_paths_list.csv
+sed -i '1s/^/file_paths\n/' ./data/file_paths_list.csv  # Add column header
+```
+
+#### (6) Edit the configuration file
 
 Open the configuration file [`configs/extract_image_taken_datetime.yaml`](./configs/extract_image_taken_datetime.yaml) and edit the values according to the comments in the file.
 
-#### (6) Run the script
+#### (7) Run the script
 
 ```bash
 python ./extract_image_taken_datetime.py ./configs/extract_image_taken_datetime.yaml
@@ -160,6 +169,7 @@ Before running, ensure you have already:
 - Installed ExifTool
 - Cloned the repository
 - Installed dependencies
+- Prepared a CSV file for input
 
 (See [Chapter 1](#1-extract_image_taken_datetimepy) for setup details.)
 

@@ -74,11 +74,21 @@ pip install --upgrade pip
 pip install -r ./requirements.txt
 ```
 
-#### (5) 設定ファイルを編集する
+#### (5) 入力用のCSVファイルを用意する
+
+実行中のPC内に存在する写真・動画ファイルのパスが記載されたCSVを用意します。  
+CSVがない場合は、以下のような方法で作成します。
+```bash
+TARGET_FOLDER='<対象ファイルが格納されているフォルダ>'
+find "$TARGET_FOLDER" -type f > ./data/file_paths_list.csv
+sed -i '1s/^/file_paths\n/' ./data/file_paths_list.csv  # 列ヘッダー追加
+```
+
+#### (6) 設定ファイルを編集する
 
 設定ファイル[`configs/extract_image_taken_datetime.yaml`](./configs/extract_image_taken_datetime.yaml)を開き、ファイル内のコメントに従って値を編集します。
 
-#### (6) スクリプトを実行する
+#### (7) スクリプトを実行する
 
 ```bash
 python ./extract_image_taken_datetime.py ./configs/extract_image_taken_datetime.yaml
@@ -158,6 +168,7 @@ file_paths,datetime_tag_by_exiftool,datetime_by_exiftool,datetime_aware_iso8601_
 - ExifToolのインストール
 - リポジトリをクローンする
 - Python依存関係をインストールする
+- 入力用のCSVファイルを用意する
 
 （詳細は[1章](#1-extract_image_taken_datetimepy)を参照してください。）
 
