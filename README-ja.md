@@ -4,11 +4,11 @@
 
 ## 概要
 このリポジトリは、[ExifTool](https://exiftool.org/)を使用してファイル（写真、動画）から「撮影日時」を抽出するためのツールを提供します。
-メインのスクリプトは：
+メインのスクリプトは以下です。:
 
 - **1. [`extract_image_taken_datetime.py`](#1-extract_image_taken_datetimepy)** — CSVファイルからファイルパスを読み込み、ExifToolを使用して最も適切な「撮影日時」を取得し、CSVに出力します。
 
-また、補助スクリプトも同時に提供しています。：
+また、補助スクリプトも同時に提供しています。:
 
 - **2. [`read_exiftool_values_of_files.py`](#2-read_exiftool_values_of_filespy)** — ファイルのメタデータタグを確認するのに役立ちます。
 メインスクリプトを実行する前に、ファイルにどのようなメタデータタグが存在し、撮影日時として利用できるかを確認したい場合に便利です。なお、メインスクリプトのYAML設定ファイルにおいては、撮影日時として利用できるタグの優先順位が事前設定されています。
@@ -31,7 +31,7 @@
 [`extract_image_taken_datetime.py`](./extract_image_taken_datetime.py) は、CSVファイルからファイルパスの一覧を読み込み、ExifToolを使用して最適な「撮影日時」を決定します。  
 「撮影日時」とみなせるメタデータタグ一覧をYAML設定ファイルに指定する必要がありますが、実験的に求められた11のメタデータタグがデフォルトでYAMLファイルに記載されています。自分の保有する写真・動画ファイルについて、撮影日時とみなせるメタデータタグを確認したい場合は、まず[`read_exiftool_values_of_files.py`](#2-read_exiftool_values_of_filespy)を実行してください。
 
-スクリプトはCSVに以下の列を追加します：
+スクリプトはCSVに以下の列を追加します。:
 
 - ExifToolが返す日時関連のタグ名
 - ExifToolが返す日時の生データ
@@ -42,12 +42,12 @@
 
 ### 1.2. インストールと使用方法
 
-#### (1) Pythonのインストール
+#### (1) Pythonをインストールする
 
-Pythonを[公式サイト](https://www.python.org/downloads/)を参照してインストールしてください。  
+[公式サイト](https://www.python.org/downloads/)を参照してPythonをインストールしてください。  
 開発者が検証したバージョンより古い場合、スクリプトが正常に動作しない可能性があります。[`.python-version`](./.python-version)を参照してください。
 
-#### (2) ExifToolのインストール
+#### (2) ExifToolをインストールする
 
 ExifToolがインストールされ、PATHを通すなどして"exiftool"コマンドにより実行可能である必要があります。  
 ダウンロードとインストールの手順: [https://exiftool.org/install.html](https://exiftool.org/install.html)  
@@ -67,8 +67,9 @@ git clone https://github.com/u-man-lab/extract_image_taken_datetime.git
 cd ./extract_image_taken_datetime
 ```
 
-#### (4) Python依存関係をインストールする
+#### (4) Pythonライブラリをインストールする
 
+開発者が検証したバージョンより古い場合、スクリプトが正常に動作しない可能性があります。
 ```bash
 pip install --upgrade pip
 pip install -r ./requirements.txt
@@ -98,14 +99,14 @@ python ./extract_image_taken_datetime.py ./configs/extract_image_taken_datetime.
 
 ### 1.3. 期待される出力
 
-成功した場合、標準エラー出力(stderr)に次のようなログが出力されます:
+成功した場合、標準エラー出力(stderr)に次のようなログが出力されます。:
 
 ```
 2025-08-11 10:01:23,476 [INFO] __main__: "extract_image_taken_datetime.py" start!
 2025-08-11 10:01:23,522 [INFO] __main__: Reading CSV file "data/file_paths_list.csv"...
 2025-08-11 10:01:23,873 [INFO] __main__: Scanning profiles of the files...
 2025-08-11 10:01:42,014 [INFO] __main__: ExifTool processing... [0/36031 valid files]
-：
+:
 2025-08-11 10:35:42,436 [INFO] __main__: ExifTool processing... [35630/36031 valid files]
 2025-08-11 10:36:07,480 [INFO] __main__: ExifTool processing has been completed. [36031/36031 valid files]
 2025-08-11 10:36:09,023 [INFO] __main__: Searching image taken datetime data...
@@ -115,7 +116,7 @@ python ./extract_image_taken_datetime.py ./configs/extract_image_taken_datetime.
 ```
 （参考までに、36,031ファイルの処理に約35分かかりました。）
 
-生成されるCSVは次のような形式になります：
+生成されるCSVは次のような形式になります。:
 
 ```
 file_paths,datetime_tag_by_exiftool,datetime_by_exiftool,datetime_aware_iso8601_extended,datetime_local_unix
@@ -128,7 +129,7 @@ file_paths,datetime_tag_by_exiftool,datetime_by_exiftool,datetime_aware_iso8601_
 
 ### 1.4. よくあるエラー
 
-詳細については、スクリプトのソースコードを参照してください。よくあるエラーには以下のものが含まれます:
+詳細については、スクリプトのソースコードを参照してください。よくあるエラーには以下のものが含まれます。:
 
 - **ExifToolがインストールされていない**
   ```
@@ -155,20 +156,20 @@ file_paths,datetime_tag_by_exiftool,datetime_by_exiftool,datetime_aware_iso8601_
 [`read_exiftool_values_of_files.py`](./read_exiftool_values_of_files.py)は、CSVファイルからファイルのパス一覧を読み込み、各ファイルのメタデータをExifTool形式で取得します。  
 本スクリプトは、ファイルが保有するメタデータタグを一覧で確認するための補助ツールです。特に、メインスクリプト（[`extract_image_taken_datetime.py`](#1-extract_image_taken_datetimepy)）を使用する前に、撮影日時関連のタグとしてどのようなものが存在するのかを確認したい場合に便利です。
 
-2つのモードをサポートしています：
+2つのモードをサポートしています。:
 1. **All tags mode** — YAML設定ファイルで`PROCESS` > `TARGET_EXIFTOOL_TAGS`が指定されていない場合、結果のCSVにすべてのExifToolタグが表示されますが、すべての値はマスクされます（CSVのサイズが過大になるのを防ぐため）。
 2. **Specific tags mode** — YAML設定ファイルに`PROCESS` > `TARGET_EXIFTOOL_TAGS`を指定すると、結果のCSVファイルに指定したExifToolタグと実際の値が表示されます。
 
 ---
 
-### 2.2. 使い方
+### 2.2. 実行方法
 
-実施する前に、以下の準備が完了していることを確認してください：
+実行するために、以下の準備が完了していることを確認してください。:
 
-- Pythonのインストール
-- ExifToolのインストール
+- Pythonをインストールする
+- ExifToolをインストールする
 - リポジトリをクローンする
-- Python依存関係をインストールする
+- Pythonライブラリをインストールする
 - 入力用のCSVファイルを用意する
 
 （詳細は[1章](#1-extract_image_taken_datetimepy)を参照してください。）
@@ -187,7 +188,7 @@ python ./read_exiftool_values_of_files.py ./configs/read_exiftool_values_of_file
 
 ### 2.3. 期待される出力
 
-成功した場合、標準エラー出力(stderr)に次のようなログが出力されます:
+成功した場合、標準エラー出力(stderr)に次のようなログが出力されます。:
 
 ```
 2025-08-11 14:44:11,870 [INFO] __main__: "read_exiftool_values_of_files.py" start!
@@ -204,7 +205,7 @@ python ./read_exiftool_values_of_files.py ./configs/read_exiftool_values_of_file
 ```
 （参考までに、36,031ファイルの処理に約1時間3分かかりました。）
 
-生成されるCSVファイルは次のような形式になります：
+生成されるCSVファイルは次のような形式になります。:
 
 * **All tags mode** (値がマスクされます):
   ```

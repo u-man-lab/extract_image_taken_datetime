@@ -71,6 +71,7 @@ cd ./extract_image_taken_datetime
 
 #### (4) Install Python dependencies
 
+The scripts may not work properly if the versions are lower than the verified ones.
 ```bash
 pip install --upgrade pip
 pip install -r ./requirements.txt
