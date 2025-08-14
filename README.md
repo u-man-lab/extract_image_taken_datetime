@@ -114,6 +114,7 @@ On success, stderr will include logs similar to:
 2025-08-11 10:36:28,748 [INFO] __main__: Writing CSV file "results/file_paths_list_with_image_taken_datetime.csv"...
 2025-08-11 10:36:30,185 [INFO] __main__: "extract_image_taken_datetime.py" done!
 ```
+(For reference, it took about 35min. to process 36,031 files.)
 
 The resulting CSV will be like:
 
@@ -202,6 +203,7 @@ Example stderr log (specific tags mode):
 2025-08-11 15:47:03,275 [INFO] __main__: Writing CSV file "results/file_paths_list_with_exif_tool_tags.csv"...
 2025-08-11 15:47:08,354 [INFO] __main__: "read_exiftool_values_of_files.py" done!
 ```
+(For reference, it took about 1h3m to process 36,031 files.)
 
 The resulting CSV will be like:
 
