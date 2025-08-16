@@ -114,7 +114,7 @@ python ./extract_image_taken_datetime.py ./configs/extract_image_taken_datetime.
 2025-08-11 10:36:28,748 [INFO] __main__: Writing CSV file "results/file_paths_list_with_image_taken_datetime.csv"...
 2025-08-11 10:36:30,185 [INFO] __main__: "extract_image_taken_datetime.py" done!
 ```
-（参考までに、36,031ファイルの処理に約35分かかりました。）
+参考までに、36,031ファイルの処理に約35分かかりました。Synology DS218（Realtek RTD1296、4コア 1.4 GHz、2GB DDR4）に、2×4TB WD Red（SMR）をRAID1で構成したNAS上で実行しました。
 
 生成されるCSVは次のような形式になります。:
 
@@ -203,7 +203,7 @@ python ./read_exiftool_values_of_files.py ./configs/read_exiftool_values_of_file
 2025-08-11 15:47:03,275 [INFO] __main__: Writing CSV file "results/file_paths_list_with_exif_tool_tags.csv"...
 2025-08-11 15:47:08,354 [INFO] __main__: "read_exiftool_values_of_files.py" done!
 ```
-（参考までに、36,031ファイルの処理に約1時間3分かかりました。）
+参考までに、36,031ファイルの処理に約1時間3分かかりました。Synology DS218（Realtek RTD1296、4コア 1.4 GHz、2GB DDR4）に、2×4TB WD Red（SMR）をRAID1で構成したNAS上で実行しました。
 
 生成されるCSVファイルは次のような形式になります。:
 
