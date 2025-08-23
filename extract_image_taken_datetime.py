@@ -668,7 +668,11 @@ def __extract_image_taken_datetime():
             for dtorg in datetime_original_list
         ]
         datetime_original_local_unix_list = [
-            f'{l_obj.timestamp():.6f}' if l_obj is not None else None
+            (
+                f'{l_obj.replace(tzinfo=datetime.timezone.utc).timestamp():.6f}'
+                if l_obj is not None
+                else None
+            )
             for l_obj in datetime_original_local_obj_list
         ]
         processing_df[output_csv_config.DATETIME_LOCAL_UNIX_COLUMN] = pd.Series(
