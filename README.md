@@ -25,7 +25,7 @@ Both scripts read their settings from YAML config files in the `configs/` direct
 - **Developer**: U-MAN Lab. ([https://u-man-lab.com/](https://u-man-lab.com/))
 
 ★The scripts in this repository are explained in the following article (in Japanese).★  
-https://u-man-lab.com/extract-image-taken-datetime-by-python/
+[Pythonで写真・動画の撮影日時を取得する。 | U-MAN Lab.](https://u-man-lab.com/extract-image-taken-datetime-by-python/?utm_source=github&utm_medium=social&utm_campaign=extract_image_taken_datetime)
 
 ---
 

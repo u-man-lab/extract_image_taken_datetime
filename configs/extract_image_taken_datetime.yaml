@@ -19,7 +19,7 @@ PROCESS:
   # Priority-ordered ExifTool tags to extract image datetime.
   # 9 values below were determined experimentally in the developer's environment.
   # For details, refer to the following article (in Japanese.)
-  # https://u-man-lab.com/extract-image-taken-datetime-by-python/#chap3-creation-process-of-tag-list
+  # https://u-man-lab.com/extract-image-taken-datetime-by-python/?utm_source=github&utm_medium=social&utm_campaign=extract_image_taken_datetime#chap3-creation-process-of-tag-list
   EXIFTOOL_TAGS_OF_IMAGE_TAKEN_DATETIME_IN_PRIORITY_ORDER:
     - 'Composite:SubSecDateTimeOriginal'
     - 'Composite:SubSecCreateDate'

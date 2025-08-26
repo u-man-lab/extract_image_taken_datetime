@@ -23,7 +23,7 @@
 - **開発者**: U-MAN Lab. ([https://u-man-lab.com/](https://u-man-lab.com/))
 
 ★このリポジトリのスクリプトについて、以下の記事で解説しています。★  
-https://u-man-lab.com/extract-image-taken-datetime-by-python/
+[Pythonで写真・動画の撮影日時を取得する。 | U-MAN Lab.](https://u-man-lab.com/extract-image-taken-datetime-by-python/?utm_source=github&utm_medium=social&utm_campaign=extract_image_taken_datetime)
 
 ---
 
