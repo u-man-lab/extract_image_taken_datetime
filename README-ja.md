@@ -22,6 +22,9 @@
 - **ライセンス**: このリポジトリ内の[`LICENSE`](./LICENSE)を参照してください。
 - **開発者**: U-MAN Lab. ([https://u-man-lab.com/](https://u-man-lab.com/))
 
+★このリポジトリのスクリプトについて、以下の記事で解説しています。★  
+https://u-man-lab.com/extract-image-taken-datetime-by-python/
+
 ---
 
 ## 1. `extract_image_taken_datetime.py`

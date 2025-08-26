@@ -24,6 +24,9 @@ Both scripts read their settings from YAML config files in the `configs/` direct
 - **License**: See [`LICENSE`](./LICENSE) in this repository.
 - **Developer**: U-MAN Lab. ([https://u-man-lab.com/](https://u-man-lab.com/))
 
+★The scripts in this repository are explained in the following article (in Japanese).★  
+https://u-man-lab.com/extract-image-taken-datetime-by-python/
+
 ---
 
 ## 1. `extract_image_taken_datetime.py`
